@@ -1,0 +1,20 @@
+{
+    "name": "fazy/assetic-config-bundle",
+    "type": "symfony-bundle",
+    "description": "Assetic filter that replaces placeholders with Symfony 2 config values.",
+    "license": "LGPL",
+    "authors": [
+        {
+            "name": "Lars Janssen",
+            "email": "lars@fazy.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/assetic-bundle": "~2.3"
+    },
+    "autoload": {
+        "psr-0": { "Fazy\\AsseticConfigBundle": "" }
+    },
+    "target-dir": "Fazy/AsseticConfigBundle"
+}
