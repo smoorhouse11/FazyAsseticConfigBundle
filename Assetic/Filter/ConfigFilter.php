@@ -5,23 +5,49 @@ namespace Fazy\AsseticConfigBundle\Assetic\Filter;
 use Assetic\Asset\AssetInterface;
 use Assetic\Filter\FilterInterface;
 use Assetic\Filter\HashableInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class ConfigFilter implements FilterInterface, HashableInterface
 {
     /**
-     * @var ContainerInterface
+     * @var ParameterBagInterface
      */
-    private $container;
+    private $parameterBag;
 
+    /**
+     * @var string Regex to use for picking out config items
+     */
     protected $configPattern;
 
     /**
-     * @param ContainerInterface $container
+     * @var callable Function to encode the parameter
      */
-    public function __construct(ContainerInterface $container)
+    protected $encoder;
+
+    /**
+     * @param ParameterBagInterface $parameterBag
+     */
+    public function __construct(ParameterBagInterface $parameterBag)
     {
-        $this->container = $container;
+        $this->parameterBag = $parameterBag;
+        $this->configPattern = '/__config__(.+?)__/';
+        $this->encoder = function($value) { return json_encode($value); };
+    }
+
+    /**
+     * @param string $configPattern
+     */
+    public function setConfigPattern($configPattern)
+    {
+        $this->configPattern = $configPattern;
+    }
+
+    /**
+     * @param callable $encoder
+     */
+    public function setEncoder(callable $encoder)
+    {
+        $this->encoder = $encoder;
     }
 
     /**
@@ -37,12 +63,12 @@ class ConfigFilter implements FilterInterface, HashableInterface
     public function filterDump(AssetInterface $asset)
     {
         $content = $asset->getContent();
+        $encoder = $this->encoder;
 
         $content = preg_replace_callback(
-            '/__config__(.+?)__/', // change to $configPattern
-            function($matches) {
-                // @todo - make the encoding extensible
-                return json_encode($this->container->getParameter($matches[1]));
+            $this->configPattern,
+            function($matches) use ($encoder) {
+                return $encoder($this->parameterBag->get($matches[1]));
             },
             $content
         );
@@ -55,6 +81,6 @@ class ConfigFilter implements FilterInterface, HashableInterface
      */
     public function hash()
     {
-        return serialize($this->container->getParameterBag()->all());
+        return serialize($this->parameterBag->all());
     }
 }

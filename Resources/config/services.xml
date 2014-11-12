@@ -5,11 +5,19 @@
 
     <parameters>
         <parameter key="fazy_assetic_config.filter_class">Fazy\AsseticConfigBundle\Assetic\Filter\ConfigFilter</parameter>
+        <parameter key="fazy_assetic_config.parameter_class">Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface</parameter>
+        <parameter key="fazy_assetic_config.container_class">%kernel.container_class%</parameter>
     </parameters>
 
     <services>
+        <service
+            id="fazy_assetic_config.container_parameters"
+            class="%fazy_assetic_config.parameter_class%"
+            factory-service="service_container"
+            factory-method="getParameterBag" />
+
         <service id="fazy_assetic_config.filter" class="%fazy_assetic_config.filter_class%">
-            <argument id="service_container" type="service" />
+            <argument id="fazy_assetic_config.container_parameters" type="service" />
             <tag name="assetic.filter" alias="config" />
         </service>
     </services>
