@@ -1,8 +1,11 @@
-AsseticConfigBundle
-===================
+FazyAsseticConfigBundle
+=======================
+
+*This is a very new bundle, please report any issues.*
 
 This Symfony 2 bundle allows you to use container parameters within any assets such as JavaScripts and CSS files,
 so long as they can be compiled through [Assetic](http://symfony.com/doc/current/cookbook/assetic/asset_management.html).
+You will need to be familiar with Assetic before you can use this bundle.
 
 Two Assetic filters are provided: **config** and **config-json**. The only difference is that **config-json**
 JSON-encodes the output value.
@@ -37,7 +40,7 @@ filter as follows in your Twig templates:
 
 In this example, only one script is included, **config.js**. It is filtered through the **config-json** filter.
 
-Within the asset file, you can insert any config item using the pattern **__config__<config>__**, for example:
+Within the asset file, you can insert any config item using the pattern `__config__<config>__`, for example:
 
     // app/config/parameters.yml
     my_bundle.foo.bar: Hello12345!
