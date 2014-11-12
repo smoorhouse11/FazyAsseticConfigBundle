@@ -3,10 +3,12 @@
     "type": "symfony-bundle",
     "description": "Assetic filter that replaces placeholders with Symfony 2 config values.",
     "license": "MIT",
+    "homepage": "https://github.com/fazy/FazyAsseticConfigBundle",
     "authors": [
         {
             "name": "Lars Janssen",
-            "email": "lars@fazy.net"
+            "email": "lars@fazy.net",
+            "homepage": "http://fazy.net"
         }
     ],
     "require": {
