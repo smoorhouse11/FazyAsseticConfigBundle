@@ -31,7 +31,7 @@ class ConfigFilter implements FilterInterface, HashableInterface
     {
         $this->parameterBag = $parameterBag;
         $this->configPattern = '/__config__(.+?)__/';
-        $this->encoder = function($value) { return json_encode($value); };
+        $this->encoder = function($value) { return $value; };
     }
 
     /**

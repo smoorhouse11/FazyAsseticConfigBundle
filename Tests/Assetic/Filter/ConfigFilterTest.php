@@ -32,6 +32,28 @@ class ConfigFilterText extends \PHPUnit_Framework_TestCase
         $this->asset
             ->expects($this->once())
             ->method('setContent')
+            ->with('Test foo bar value String');
+
+        $this->parameterBag
+            ->expects($this->once())
+            ->method('get')
+            ->with('foo_bar')
+            ->will($this->returnValue('foo bar value'));
+
+        $configFilter = new ConfigFilter($this->parameterBag);
+        $configFilter->filterDump($this->asset);
+    }
+
+    public function testFilterDumpWithJsonEncoder()
+    {
+        $this->asset
+            ->expects($this->atLeastOnce())
+            ->method('getContent')
+            ->will($this->returnValue('Test __config__foo_bar__ String'));
+
+        $this->asset
+            ->expects($this->once())
+            ->method('setContent')
             ->with('Test "foo bar value" String');
 
         $this->parameterBag
@@ -41,6 +63,7 @@ class ConfigFilterText extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('foo bar value'));
 
         $configFilter = new ConfigFilter($this->parameterBag);
+        $configFilter->setEncoder(function($value) { return json_encode($value); });
         $configFilter->filterDump($this->asset);
     }
 }
