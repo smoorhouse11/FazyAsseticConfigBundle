@@ -61,6 +61,8 @@ the JSON-encode):
         },
     };
 
+At the risk of stating the obvious, you should not output any sensitive configuration values in this way!
+
 Configuration
 -------------
 
