@@ -31,7 +31,14 @@ class ConfigFilter implements FilterInterface, HashableInterface
     {
         $this->parameterBag = $parameterBag;
         $this->configPattern = '/__config__(.+?)__/';
-        $this->encoder = function($value) { return $value; };
+        $this->encoder = function($value) {
+            if (! is_scalar($value) && ! is_null($value)) {
+                throw new Exception\ValueNotSupportedException(
+                    'ConfigFilter encoder only supports scalar or null values.'
+                );
+            }
+            return $value;
+        };
     }
 
     /**
@@ -68,7 +75,13 @@ class ConfigFilter implements FilterInterface, HashableInterface
         $content = preg_replace_callback(
             $this->configPattern,
             function($matches) use ($encoder) {
-                return $encoder($this->parameterBag->get($matches[1]));
+                $parameter = $matches[1];
+
+                if (! $this->parameterBag->has($parameter)) {
+                    throw new Exception\ParameterNotFoundException("Parameter not found: '$parameter'.");
+                }
+
+                return $encoder($this->parameterBag->get($parameter));
             },
             $content
         );
