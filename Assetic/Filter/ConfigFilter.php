@@ -50,9 +50,11 @@ class ConfigFilter implements FilterInterface, HashableInterface
     }
 
     /**
-     * @param callable $encoder
+     * $encoder should be a PHP callable.
+     *
+     * @param mixed $encoder
      */
-    public function setEncoder(callable $encoder)
+    public function setEncoder($encoder)
     {
         $this->encoder = $encoder;
     }
@@ -72,16 +74,18 @@ class ConfigFilter implements FilterInterface, HashableInterface
         $content = $asset->getContent();
         $encoder = $this->encoder;
 
+        $parameterBag = $this->parameterBag;
+
         $content = preg_replace_callback(
             $this->configPattern,
-            function($matches) use ($encoder) {
+            function($matches) use ($encoder, $parameterBag) {
                 $parameter = $matches[1];
 
-                if (! $this->parameterBag->has($parameter)) {
+                if (! $parameterBag->has($parameter)) {
                     throw new Exception\ParameterNotFoundException("Parameter not found: '$parameter'.");
                 }
 
-                return $encoder($this->parameterBag->get($parameter));
+                return $encoder($parameterBag->get($parameter));
             },
             $content
         );
